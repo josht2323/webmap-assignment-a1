@@ -21,8 +21,13 @@
 require([
   "esri/Map",
   "esri/views/MapView",
-  "esri/widgets/Home"
-], function(Map, MapView, Home) {
+  "esri/widgets/Home",
+  "esri/widgets/Sketch",
+  "esri/layers/GraphicsLayer",
+  "esri/widgets/Search",
+  "esri/widgets/ScaleBar",
+  "esri/widgets/Measurement"
+], function(Map, MapView, Home, Sketch, GraphicsLayer, Search, ScaleBar, Measurement) {
 
   const map = new Map({
     basemap: "streets"
@@ -36,11 +41,37 @@ require([
   });
 
   // Home widget
-  const homeWidget = new Home({
+  const homeWidget = new Home({ view: view });
+  view.ui.add(homeWidget, "top-left");
+
+  // Sketch widget
+  const graphicsLayer = new GraphicsLayer();
+  map.add(graphicsLayer);
+
+  const sketch = new Sketch({
+    layer: graphicsLayer,
     view: view
   });
+  view.ui.add(sketch, "top-right");
 
-  view.ui.add(homeWidget, "top-left");
+  // Search widget
+  const searchWidget = new Search({ view: view });
+  view.ui.add(searchWidget, "top-right");
+
+  // Scale bar
+  const scaleBar = new ScaleBar({
+    view: view,
+    unit: "metric"
+  });
+  view.ui.add(scaleBar, "bottom-left");
+
+  // Measurement widget
+  const measurement = new Measurement({
+    view: view
+  });
+  view.ui.add(measurement, "bottom-right");
+
+});
 
 });
 </script>
