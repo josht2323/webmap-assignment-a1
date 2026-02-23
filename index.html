@@ -1,80 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
-<title>Web Map Assignment</title>
+  <meta charset="utf-8" />
+  <title>Urban Planning Web Map — Burlington, ON</title>
 
-<link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
-<script src="https://js.arcgis.com/4.29/"></script>
+  <!-- ArcGIS CSS -->
+  <link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css" />
 
-<style>
-  html, body, #viewDiv {
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-  }
-</style>
+  <style>
+    html, body, #viewDiv {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
 
-<script>
-require([
-  "esri/Map",
-  "esri/views/MapView",
-  "esri/widgets/Home",
-  "esri/widgets/Sketch",
-  "esri/layers/GraphicsLayer",
-  "esri/widgets/Search",
-  "esri/widgets/ScaleBar",
-  "esri/widgets/Measurement"
-], function(Map, MapView, Home, Sketch, GraphicsLayer, Search, ScaleBar, Measurement) {
+    #titleDiv {
+      position: absolute;
+      top: 10px;
+      left: 60px;
+      z-index: 99;
+      background: white;
+      padding: 12px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      font-family: Arial;
+    }
+  </style>
 
-  const map = new Map({
-    basemap: "streets"
-  });
+  <!-- ArcGIS JS -->
+  <script src="https://js.arcgis.com/4.30/"></script>
 
-  const view = new MapView({
-    container: "viewDiv",
-    map: map,
-    center: [-79.8, 43.3],
-    zoom: 10
-  });
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/widgets/Home",
+      "esri/widgets/Search",
+      "esri/widgets/ScaleBar",
+      "esri/widgets/Sketch",
+      "esri/widgets/Measurement",
+      "esri/widgets/LayerList",
+      "esri/layers/GraphicsLayer"
+    ], function(
+      Map, MapView, Home, Search, ScaleBar, Sketch, Measurement, LayerList, GraphicsLayer
+    ) {
 
-  // Home widget
-  const homeWidget = new Home({ view: view });
-  view.ui.add(homeWidget, "top-left");
+      // Graphics layer for sketching
+      const graphicsLayer = new GraphicsLayer();
 
-  // Sketch widget
-  const graphicsLayer = new GraphicsLayer();
-  map.add(graphicsLayer);
+      // Map with nice basemap
+      const map = new Map({
+        basemap: "hybrid",
+        layers: [graphicsLayer]
+      });
 
-  const sketch = new Sketch({
-    layer: graphicsLayer,
-    view: view
-  });
-  view.ui.add(sketch, "top-right");
+      // View centered on Burlington/Hamilton
+      const view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [-79.8, 43.3],
+        zoom: 12
+      });
 
-  // Search widget
-  const searchWidget = new Search({ view: view });
-  view.ui.add(searchWidget, "top-right");
+      // HOME widget
+      const home = new Home({ view: view });
+      view.ui.add(home, "top-left");
 
-  // Scale bar
-  const scaleBar = new ScaleBar({
-    view: view,
-    unit: "metric"
-  });
-  view.ui.add(scaleBar, "bottom-left");
+      // SEARCH widget
+      const search = new Search({ view: view });
+      view.ui.add(search, "top-right");
 
-  // Measurement widget
-  const measurement = new Measurement({
-    view: view
-  });
-  view.ui.add(measurement, "bottom-right");
+      // SCALE BAR
+      const scaleBar = new ScaleBar({
+        view: view,
+        unit: "metric"
+      });
+      view.ui.add(scaleBar, "bottom-left");
 
-});
-</script>
+      // SKETCH widget
+      const sketch = new Sketch({
+        view: view,
+        layer: graphicsLayer
+      });
+      view.ui.add(sketch, "top-right");
+
+      // MEASUREMENT widget
+      const measurement = new Measurement({
+        view: view
+      });
+      view.ui.add(measurement, "bottom-right");
+
+      // LAYER LIST (extra polish)
+      const layerList = new LayerList({
+        view: view
+      });
+      view.ui.add(layerList, "bottom-left");
+
+    });
+  </script>
 </head>
 
 <body>
-<div id="viewDiv"></div>
+
+  <!-- Title box -->
+  <div id="titleDiv">
+    <h2>Urban Planning Web Map</h2>
+    <p>Burlington & Hamilton Area — Sketch, Measure, Explore</p>
+  </div>
+
+  <!-- Map container -->
+  <div id="viewDiv"></div>
+
 </body>
 </html>
